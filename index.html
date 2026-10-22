@@ -6,38 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CareFlow | Clinic Queue Organizer</title>
   
-<style>
-  /* Make the simulator easier to read on small screens */
-#simulator {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-#simulator .stats {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  width: 100%;
-}
-
-#simulator .stats .card {
-  min-width: 0;
-  box-sizing: border-box;
-  overflow-wrap: break-word;
-  word-break: normal;
-}
-
-@media (max-width: 600px) {
-  #simulator .stats {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  #simulator .stats .card {
-    width: 100%;
-  }
-}
-
+<style>  
 :root {
   --navy: #173b55;
   --teal: #087f8c;
@@ -125,6 +94,35 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
   .card { padding: 12px; }
   .stat-number { font-size: 24px; }
   .stat-label { font-size: 11px; }
+}
+  /* CareFlow simulator mobile layout */
+#simulator {
+  width: 100%;
+  min-width: 0;
+}
+
+#simulator .stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+#simulator .stats .card {
+  min-width: 0;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+#simulator .stats .stat-number {
+  white-space: nowrap;
+}
+
+@media (max-width: 600px) {
+  #simulator .stats {
+    grid-template-columns: 1fr;
+  }
+
+  #simulator .stats .card {
+    width: 100%;
+  }
 }
 </style>
 </head>
