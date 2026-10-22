@@ -28,6 +28,39 @@ header {
 }
 .brand { font-size: 25px; font-weight: 800; }
 header p { margin: 7px 0 0; color: #d6e9f1; }
+.main-nav {
+  display: flex;
+  gap: 8px;
+  padding: 12px max(18px, calc((100% - 1100px)/2));
+  background: white;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;
+}
+
+.nav-tab {
+  flex: 0 0 auto;
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 11px 14px;
+  white-space: nowrap;
+}
+
+.nav-tab:hover {
+  background: #f3f7fa;
+}
+
+.nav-tab.active {
+  background: #e8f3f5;
+  color: var(--teal);
+  border-color: #cce7e9;
+}
+
+.nav-tab:focus-visible {
+  outline: 3px solid #74c8d2;
+  outline-offset: 2px;
+}
 main { max-width: 1100px; margin: auto; padding: 25px 18px 45px; }
 .notice {
   padding: 13px 15px; background: #fff8e6;
@@ -217,6 +250,10 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 
 .copyright-notice p {
   margin: 4px 0;
+}  
+/* Navigation tab visibility */
+.tab-section-hidden {
+  display: none !important;
 }
 </style>
 </head>
@@ -225,6 +262,19 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
   <div class="brand">✚ CareFlow</div>
   <p>A simple, transparent clinic queue organizer</p>
 </header>
+
+<nav class="main-nav" aria-label="Main navigation">
+  <button type="button" class="nav-tab active"
+    data-tab="queueSection">Visit Queue</button>
+  <button type="button" class="nav-tab"
+    data-tab="activitySection">Activity History</button>
+  <button type="button" class="nav-tab"
+    data-tab="reportsSection">Reports</button>
+  <button type="button" class="nav-tab"
+    data-tab="waitingRoomSection">Waiting Room</button>
+  <button type="button" class="nav-tab"
+    data-tab="simulator">Simulator</button>
+</nav>
 
 <main>
   <div class="notice">
@@ -249,7 +299,7 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
     </div>
   </section>
 
-  <div class="layout">
+  <div class="layout" id="queueSection">
     <section class="panel">
       <h2>Add a visit</h2>
       <form id="visitForm">
@@ -325,9 +375,17 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 
 <div id="queue" aria-live="polite"></div>
           
-      <hr style="border:0;border-top:1px solid #dce6ed;margin:20px 0">
-      
-      <section class="activity-panel" aria-labelledby="activityHeading">
+      <div style="font-size:13px;color:#627487">
+        <strong>Average completed waiting time</strong>
+        <div class="stat-number" id="averageWait">—</div>
+        <p>Minutes from adding a visit to marking it in consultation.
+          Demonstration figures only.</p>
+      </div>
+    </section>
+  </div>
+  
+        <section class="activity-panel" id="activitySection" aria-labelledby="activityHeading">
+  <hr style="border:0;border-top:1px solid #dce6ed;margin:0 0 20px">
   <h2 id="activityHeading">Queue Activity History</h2>
   <p class="priority-note">
     Demonstration history only. Events are stored in this browser
@@ -337,14 +395,6 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
     No activity recorded yet.
   </div>
 </section>
-      
-      <div style="font-size:13px;color:#627487">
-        <strong>Average completed waiting time</strong>
-        <div class="stat-number" id="averageWait">—</div>
-        <p>Minutes from adding a visit to marking it in consultation.
-          Demonstration figures only.</p>
-      </div>
-    </section>
 
 <section class="panel" id="simulator" style="margin-top:20px">
   <h2>Queue Performance Simulator</h2>
@@ -392,7 +442,22 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
     performance measurements.
   </p>
 </section>
-  </div>
+  
+<section class="panel" id="reportsSection" style="margin-top:20px">
+  <h2>Daily Queue Report</h2>
+  <p>Daily queue summaries and CSV export will appear here.</p>
+  <p class="priority-note">
+    Demonstration data only. Do not use real patient information.
+  </p>
+</section>
+
+<section class="panel" id="waitingRoomSection" style="margin-top:20px">
+  <h2>Waiting Room Display</h2>
+  <p>Visitors currently waiting will appear here.</p>
+  <p class="priority-note">
+    Demonstration display only. Do not show confidential patient information.
+  </p>
+</section>
 </main>
   
 <div class="copyright-notice">
@@ -725,6 +790,49 @@ updateWaitingAlert();
 render();
   
 setInterval(render, 60000);
+  
+ document.querySelectorAll(".nav-tab").forEach(button => {
+  const isActive = button.dataset.tab === "queueSection";
+
+  button.classList.toggle("active", isActive);
+});
+
+document.querySelectorAll(
+  "#activitySection, #reportsSection, #waitingRoomSection, #simulator"
+).forEach(section => {
+  section.classList.add("tab-section-hidden");
+}); 
+  
+const tabButtons = document.querySelectorAll(".nav-tab");
+
+const tabSections = [
+  document.getElementById("queueSection"),
+  document.getElementById("activitySection"),
+  document.getElementById("reportsSection"),
+  document.getElementById("waitingRoomSection"),
+  document.getElementById("simulator")
+];
+
+tabButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    const selectedTab = button.dataset.tab;
+
+    tabSections.forEach(section => {
+      if (!section) return;
+
+      section.classList.toggle(
+        "tab-section-hidden",
+        section.id !== selectedTab
+      );
+    });
+
+    tabButtons.forEach(tab => {
+  const isActive = tab === button;
+  tab.classList.toggle("active", isActive);
+});
+  });
+});
+  
 </script>
 </body>
 </html>
