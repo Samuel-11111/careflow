@@ -5,6 +5,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CareFlow | Clinic Queue Organizer</title>
+  
+/* Make the simulator easier to read on small screens */
+#simulator .stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+#simulator .stats .card {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  #simulator .stats {
+    grid-template-columns: 1fr;
+  }
+
+  #simulator .stats .card {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
 <style>
 :root {
   --navy: #173b55;
