@@ -183,15 +183,25 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 
     <section class="panel">
       <div class="queue-head">
-        <h2>Visit queue</h2>
-        <select id="filter" aria-label="Filter visits">
-          <option value="All">All visits</option>
-          <option value="Waiting">Waiting</option>
-          <option value="In consultation">In consultation</option>
-          <option value="Completed">Completed</option>
-        </select>
-      </div>
-      <div id="queue" aria-live="polite"></div>
+  <h2>Visit queue</h2>
+
+  <div class="queue-controls">
+    <input
+      type="search"
+      id="searchVisit"
+      placeholder="Search by visit ID..."
+      aria-label="Search visits by visit ID"
+    >
+
+    <select id="filter" aria-label="Filter visits">
+      <option value="All">All visits</option>
+      <option value="Waiting">Waiting</option>
+      <option value="In consultation">In consultation</option>
+      <option value="Completed">Completed</option>
+    </select>
+  </div>
+</div>
+           <div id="queue" aria-live="polite"></div>
       <hr style="border:0;border-top:1px solid #dce6ed;margin:20px 0">
       <div style="font-size:13px;color:#627487">
         <strong>Average completed waiting time</strong>
@@ -308,7 +318,14 @@ function render() {
     : "—";
 
   const filter = document.getElementById("filter").value;
-  const visible = visits.filter(v => filter === "All" || v.status === filter);
+const search = document.getElementById("searchVisit").value.trim().toLowerCase();
+
+const visible = visits.filter(v => {
+  const matchesStatus = filter === "All" || v.status === filter;
+  const matchesSearch = String(v.id).toLowerCase().includes(search);
+
+  return matchesStatus && matchesSearch;
+});
   const queue = document.getElementById("queue");
   queue.replaceChildren();
 
@@ -415,7 +432,7 @@ document.getElementById("visitForm").addEventListener("submit", event => {
 });
 
 document.getElementById("filter").addEventListener("change", render);
-
+document.getElementById("searchVisit").addEventListener("input", render);
 document.getElementById("resetBtn").addEventListener("click", () => {
   if (!confirm("Reset all visits to the original demonstration data?")) return;
   visits = initialVisits.map(v => ({ ...v }));
