@@ -8,8 +8,12 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
-    import { getAuth } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-    import { getDatabase } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+import { getDatabase } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyDTGzzgv3q1d6RlZYeP92FrttasX6OV5F8",
