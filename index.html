@@ -2,6 +2,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareFlow</title>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+    import { getAuth } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "YOUR_EXISTING_API_KEY",
+      authDomain: "careflow-bcb81.firebaseapp.com",
+      databaseURL: "https://careflow-bcb81-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "careflow-bcb81",
+      storageBucket: "careflow-bcb81.firebasestorage.app",
+      messagingSenderId: "938198308965",
+      appId: "1:938198308965:web:36e4066c33a7318cb9ce8c"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    console.log("CareFlow Firebase initialized.");
+  </script>
+</head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CareFlow | Clinic Queue Organizer</title>
