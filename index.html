@@ -233,12 +233,19 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
       aria-label="Search visits by visit ID"
     >
 
-    <select id="filter" aria-label="Filter visits">
-      <option value="All">All visits</option>
-      <option value="Waiting">Waiting</option>
-      <option value="In consultation">In consultation</option>
-      <option value="Completed">Completed</option>
-    </select>
+<select id="filter" aria-label="Filter visits">
+  <option value="All">All visits</option>
+  <option value="Waiting">Waiting</option>
+  <option value="In consultation">In consultation</option>
+  <option value="Completed">Completed</option>
+</select>
+
+<select id="priorityFilter" aria-label="Filter by priority">
+  <option value="All">All priorities</option>
+  <option value="Routine">Routine</option>
+  <option value="Priority">Priority</option>
+  <option value="Urgent">Urgent</option>
+</select>
   </div>
 </div>
            <div id="queue" aria-live="polite"></div>
@@ -357,14 +364,22 @@ function render() {
       + " min"
     : "—";
 
-  const filter = document.getElementById("filter").value;
+const filter = document.getElementById("filter").value;
+const priorityFilter = document.getElementById("priorityFilter").value;
 const search = document.getElementById("searchVisit").value.trim().toLowerCase();
 
 const visible = visits.filter(v => {
   const matchesStatus = filter === "All" || v.status === filter;
   const matchesSearch = String(v.id).toLowerCase().includes(search);
 
-  return matchesStatus && matchesSearch;
+  const priority = ["Routine", "Priority", "Urgent"].includes(v.priority)
+    ? v.priority
+    : v.priority === "Priority review" ? "Priority" : "Routine";
+
+  const matchesPriority =
+    priorityFilter === "All" || priority === priorityFilter;
+
+  return matchesStatus && matchesSearch && matchesPriority;
 });
   const queue = document.getElementById("queue");
   queue.replaceChildren();
@@ -514,6 +529,7 @@ document.getElementById("visitForm").addEventListener("submit", event => {
 });
 
 document.getElementById("filter").addEventListener("change", render);
+document.getElementById("priorityFilter").addEventListener("change", render);
 document.getElementById("searchVisit").addEventListener("input", render);
 document.getElementById("resetBtn").addEventListener("click", () => {
   if (!confirm("Reset all visits to the original demonstration data?")) return;
