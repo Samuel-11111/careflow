@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CareFlow | Clinic Queue Organizer</title>
+<style>
+:root {
+  --navy: #173b55;
+  --teal: #087f8c;
+  --bg: #f3f7fa;
+  --muted: #627487;
+  --border: #dce6ed;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: var(--bg);
+  color: #203548;
+}
+header {
+  background: var(--navy);
+  color: white;
+  padding: 22px max(5%, calc((100% - 1100px)/2));
+}
+.brand { font-size: 25px; font-weight: 800; }
+header p { margin: 7px 0 0; color: #d6e9f1; }
+main { max-width: 1100px; margin: auto; padding: 25px 18px 45px; }
+.notice {
+  padding: 13px 15px; background: #fff8e6;
+  border: 1px solid #ead9a5; border-radius: 10px;
+  font-size: 13px; line-height: 1.5; margin-bottom: 22px;
+}
+.stats {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 14px; margin-bottom: 22px;
+}
+.card, .panel {
+  background: white; border: 1px solid var(--border);
+  border-radius: 13px; padding: 19px;
+}
+.stat-label { color: var(--muted); font-size: 13px; }
+.stat-number { font-size: 30px; font-weight: 800; margin-top: 8px; }
+.layout {
+  display: grid; grid-template-columns: 310px 1fr; gap: 18px;
+  align-items: start;
+}
+h2 { font-size: 18px; margin: 0 0 17px; }
+label { display: block; font-size: 13px; margin: 14px 0 7px; }
+input, select {
+  width: 100%; padding: 12px; border: 1px solid #cbd8e2;
+  border-radius: 8px; background: white; font-size: 14px;
+}
+button {
+  border: 0; border-radius: 8px; padding: 10px 13px;
+  cursor: pointer; font-weight: 700; font-size: 13px;
+}
+button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 3px solid #74c8d2; outline-offset: 2px;
+}
+.primary { background: var(--teal); color: white; }
+.secondary { background: #eaf1f5; color: var(--navy); }
+.danger { background: #fff0ef; color: #a63232; }
+.full { width: 100%; margin-top: 16px; padding: 13px; }
+.queue-head {
+  display: flex; justify-content: space-between;
+  align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.queue-head h2 { margin-bottom: 0; }
+.queue-head select { width: auto; max-width: 170px; }
+.visit {
+  border: 1px solid var(--border); border-radius: 10px;
+  padding: 15px; margin-top: 12px;
+}
+.visit-top {
+  display: flex; justify-content: space-between;
+  align-items: center; gap: 10px;
+}
+.visit-id { font-weight: 800; font-size: 16px; }
+.status {
+  font-size: 11px; font-weight: 700; padding: 6px 8px;
+  border-radius: 20px; background: #e8f3f5; color: #126c79;
+}
+.visit p { font-size: 13px; color: var(--muted); margin: 10px 0; }
+.actions { display: flex; gap: 7px; flex-wrap: wrap; }
+.empty { text-align: center; padding: 32px 10px; color: var(--muted); }
+footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px; }
+@media (max-width: 720px) {
+  .layout { grid-template-columns: 1fr; }
+  .stats { gap: 8px; }
+  .card { padding: 12px; }
+  .stat-number { font-size: 24px; }
+  .stat-label { font-size: 11px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">✚ CareFlow</div>
+  <p>A simple, transparent clinic queue organizer</p>
+</header>
+
+<main>
+  <div class="notice">
+    <strong>Demonstration project:</strong> All visits begin as fictional
+    records. Do not enter real patient information. This prototype is not
+    a clinical record system and has not been validated for clinic use.
+    Data is kept in this browser only.
+  </div>
+
+  <section class="stats" aria-label="Queue statistics">
+    <div class="card">
+      <div class="stat-label">Waiting</div>
+      <div class="stat-number" id="waitingCount">0</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">In consultation</div>
+      <div class="stat-number" id="activeCount">0</div>
+    </div>
+    <div class="card">
+      <div class="stat-label">Completed</div>
+      <div class="stat-number" id="doneCount">0</div>
+    </div>
+  </section>
+
+  <div class="layout">
+    <section class="panel">
+      <h2>Add a visit</h2>
+      <form id="visitForm">
+        <label for="visitId">Fictional visit ID</label>
+        <input id="visitId" maxlength="20" placeholder="e.g. DEMO-104"
+          required pattern="[A-Za-z0-9_-]+" autocomplete="off">
+
+        <label for="priority">Queue category</label>
+        <select id="priority">
+          <option value="Standard">Standard</option>
+          <option value="Priority review">Priority review</option>
+        </select>
+
+        <button class="primary full" type="submit">+ Add to queue</button>
+      </form>
+
+      <button class="secondary full" id="resetBtn" type="button">
+        Reset demonstration
+      </button>
+      <p style="font-size:12px;line-height:1.5;color:#627487">
+        Priority review is an organizational label only. It does not
+        determine clinical urgency or replace professional triage.
+      </p>
+    </section>
+
+    <section class="panel">
+      <div class="queue-head">
+        <h2>Visit queue</h2>
+        <select id="filter" aria-label="Filter visits">
+          <option value="All">All visits</option>
+          <option value="Waiting">Waiting</option>
+          <option value="In consultation">In consultation</option>
+          <option value="Completed">Completed</option>
+        </select>
+      </div>
+      <div id="queue" aria-live="polite"></div>
+      <hr style="border:0;border-top:1px solid #dce6ed;margin:20px 0">
+      <div style="font-size:13px;color:#627487">
+        <strong>Average completed waiting time</strong>
+        <div class="stat-number" id="averageWait">—</div>
+        <p>Minutes from adding a visit to marking it in consultation.
+          Demonstration figures only.</p>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer>CareFlow • Independent software prototype • Version 1.0</footer>
+
+<script>
+const STORAGE_KEY = "careflow_demo_v1";
+const initialVisits = [
+  { id: "DEMO-101", priority: "Standard", status: "Waiting",
+    added: Date.now() - 18 * 60000, started: null },
+  { id: "DEMO-102", priority: "Standard", status: "Waiting",
+    added: Date.now() - 9 * 60000, started: null },
+  { id: "DEMO-103", priority: "Priority review",
+    status: "In consultation", added: Date.now() - 25 * 60000,
+    started: Date.now() - 12 * 60000 }
+];
+
+let visits = loadVisits();
+
+function loadVisits() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved !== null) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (error) {
+    console.warn("Browser storage unavailable; using demo data.");
+  }
+  return initialVisits.map(v => ({ ...v }));
+}
+
+function saveVisits() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visits));
+  } catch (error) {
+    alert("Browser storage is unavailable. Changes may not persist.");
+  }
+}
+
+const elapsedMinutes = timestamp =>
+  Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
+
+function render() {
+  const waiting = visits.filter(v => v.status === "Waiting");
+  const active = visits.filter(v => v.status === "In consultation");
+  const done = visits.filter(v => v.status === "Completed");
+
+  document.getElementById("waitingCount").textContent = waiting.length;
+  document.getElementById("activeCount").textContent = active.length;
+  document.getElementById("doneCount").textContent = done.length;
+
+  const waits = done.filter(v => Number.isFinite(v.started))
+    .map(v => Math.max(0, (v.started - v.added) / 60000));
+
+  document.getElementById("averageWait").textContent = waits.length
+    ? (waits.reduce((sum, n) => sum + n, 0) / waits.length).toFixed(1)
+      + " min"
+    : "—";
+
+  const filter = document.getElementById("filter").value;
+  const visible = visits.filter(v => filter === "All" || v.status === filter);
+  const queue = document.getElementById("queue");
+  queue.replaceChildren();
+
+  if (!visible.length) {
+    const empty = document.createElement("div");
+    empty.className = "empty";
+    empty.textContent = "No visits in this view.";
+    queue.appendChild(empty);
+    return;
+  }
+
+  visible.forEach(v => {
+    const card = document.createElement("article");
+    card.className = "visit";
+
+    const top = document.createElement("div");
+    top.className = "visit-top";
+
+    const id = document.createElement("div");
+    id.className = "visit-id";
+    id.textContent = v.id;
+
+    const status = document.createElement("span");
+    status.className = "status";
+    status.textContent = v.status;
+
+    top.append(id, status);
+
+    const info = document.createElement("p");
+    info.textContent = v.priority + " · " +
+      (v.status === "Waiting"
+        ? elapsedMinutes(v.added) + " min waiting"
+        : v.status === "In consultation"
+          ? "Consultation started " + elapsedMinutes(v.started) + " min ago"
+          : "Visit completed");
+
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    if (v.status === "Waiting") {
+      addButton(actions, "Start consultation", "primary", () => {
+        v.status = "In consultation";
+        v.started = Date.now();
+        saveVisits(); render();
+      });
+    } else if (v.status === "In consultation") {
+      addButton(actions, "Complete visit", "primary", () => {
+        v.status = "Completed";
+        saveVisits(); render();
+      });
+      addButton(actions, "Return to waiting", "secondary", () => {
+        v.status = "Waiting";
+        v.started = null;
+        saveVisits(); render();
+      });
+    } else {
+      addButton(actions, "Reopen visit", "secondary", () => {
+        v.status = "Waiting";
+        v.started = null;
+        saveVisits(); render();
+      });
+    }
+
+    addButton(actions, "Remove", "danger", () => {
+      visits = visits.filter(item => item.id !== v.id);
+      saveVisits(); render();
+    });
+
+    card.append(top, info, actions);
+    queue.appendChild(card);
+  });
+}
+
+function addButton(parent, label, style, callback) {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = style;
+  button.textContent = label;
+  button.addEventListener("click", callback);
+  parent.appendChild(button);
+}
+
+document.getElementById("visitForm").addEventListener("submit", event => {
+  event.preventDefault();
+  const input = document.getElementById("visitId");
+  const id = input.value.trim().toUpperCase();
+
+  if (visits.some(v => v.id.toUpperCase() === id)) {
+    alert("That visit ID already exists.");
+    return;
+  }
+
+  visits.push({
+    id,
+    priority: document.getElementById("priority").value,
+    status: "Waiting",
+    added: Date.now(),
+    started: null
+  });
+
+  saveVisits();
+  input.value = "";
+  render();
+});
+
+document.getElementById("filter").addEventListener("change", render);
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  if (!confirm("Reset all visits to the original demonstration data?")) return;
+  visits = initialVisits.map(v => ({ ...v }));
+  saveVisits();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
