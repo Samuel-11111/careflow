@@ -8,25 +8,33 @@
   
 <style>
   /* Make the simulator easier to read on small screens */
+#simulator {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
 #simulator .stats {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 12px;
+  width: 100%;
 }
 
 #simulator .stats .card {
   min-width: 0;
-  overflow-wrap: anywhere;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: normal;
 }
 
 @media (max-width: 600px) {
   #simulator .stats {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   #simulator .stats .card {
     width: 100%;
-    box-sizing: border-box;
   }
 }
 
