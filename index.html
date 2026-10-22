@@ -756,17 +756,22 @@ document.getElementById("visitForm").addEventListener("submit", event => {
     return;
   }
 
-  visits.push({
-    id,
-    priority: document.getElementById("priority").value,
-    status: "Waiting",
-    added: Date.now(),
-    started: null
-  });
+  
+const selectedPriority = document.getElementById("priority").value;
 
-  saveVisits();
-  input.value = "";
-  render();
+visits.push({
+  id,
+  priority: selectedPriority,
+  status: "Waiting",
+  added: Date.now(),
+  started: null
+});
+
+saveVisits();
+logActivity(id, "Visit added", `Priority: ${selectedPriority}`);
+
+input.value = "";
+render();
 });
 
 function updateWaitingAlert() {
