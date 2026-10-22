@@ -670,7 +670,7 @@ document.getElementById("visitForm").addEventListener("submit", event => {
   const input = document.getElementById("visitId");
   const id = input.value.trim().toUpperCase();
 
-  if (visits.some(v => v.id.toUpperCase() === id)) {
+  if (visits.some(v => String(v.id || "").toUpperCase() === id)) {
     alert("That visit ID already exists.");
     return;
   }
