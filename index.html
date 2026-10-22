@@ -358,9 +358,11 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 
     <button type="submit" style="padding:10px 16px;">Sign in</button>
     <p id="loginMessage" role="status" aria-live="polite"></p>
-  </form>
+    </form>
   </div>
   </div>
+
+<div id="careflowApp" hidden>
 <header>
   <div class="brand">✚ CareFlow</div>
   <p>A simple, transparent clinic queue organizer</p>
@@ -569,6 +571,7 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 </div>
   
 <footer>CareFlow • Independent software prototype • Version 1.0</footer>
+</div>
 
 <script>
 const STORAGE_KEY = "careflow_demo_v1"; 
@@ -1059,8 +1062,6 @@ tabButtons.forEach(button => {
 });
   
 </script>
-<body>
-  <div id="careflowApp" hidden>
+</body>
 </html>
-</div>
 
