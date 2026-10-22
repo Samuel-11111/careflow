@@ -685,8 +685,20 @@ prioritySelect.style.marginTop = "8px";
 prioritySelect.value = priority;
 
 prioritySelect.addEventListener("change", () => {
-  v.priority = prioritySelect.value;
+  const oldPriority = v.priority;
+  const newPriority = prioritySelect.value;
+
+  if (oldPriority === newPriority) return;
+
+  v.priority = newPriority;
   saveVisits();
+
+  logActivity(
+    v.id,
+    "Priority changed",
+    `From ${oldPriority} to ${newPriority}`
+  );
+
   render();
 });
 
@@ -706,24 +718,40 @@ priorityRow.appendChild(prioritySelect);
     if (v.status === "Waiting") {
       addButton(actions, "Start consultation", "primary", () => {
         v.status = "In consultation";
-        v.started = Date.now();
-        saveVisits(); render();
+v.started = Date.now();
+saveVisits();
+
+logActivity(v.id, "Consultation started");
+
+render();
       });
     } else if (v.status === "In consultation") {
       addButton(actions, "Complete visit", "primary", () => {
         v.status = "Completed";
-        saveVisits(); render();
+saveVisits();
+
+logActivity(v.id, "Visit completed");
+
+render();
       });
       addButton(actions, "Return to waiting", "secondary", () => {
         v.status = "Waiting";
-        v.started = null;
-        saveVisits(); render();
+v.started = null;
+saveVisits();
+
+logActivity(v.id, "Returned to waiting");
+
+render();
       });
     } else {
       addButton(actions, "Reopen visit", "secondary", () => {
         v.status = "Waiting";
-        v.started = null;
-        saveVisits(); render();
+v.started = null;
+saveVisits();
+
+logActivity(v.id, "Visit reopened");
+
+render();
       });
     }
 
