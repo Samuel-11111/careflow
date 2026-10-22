@@ -4,62 +4,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CareFlow</title>
+  <title>CareFlow | Clinic Queue Organizer</title>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  signOut
-} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
-import { getDatabase } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+  import { getDatabase } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-database.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyDTGzzgv3q1d6RlZYeP92FrttasX6OV5F8",
-      authDomain: "careflow-bcb81.firebaseapp.com",
-      databaseURL: "https://careflow-bcb81-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "careflow-bcb81",
-      storageBucket: "careflow-bcb81.firebasestorage.app",
-      messagingSenderId: "938198308965",
-      appId: "1:938198308965:web:36e4066c33a7318cb9ce8c"
-    };
+  const firebaseConfig = {
+    apiKey: "AIzaSyDTGzzgv3q1d6RlZYeP92FrttasX6OV5F8",
+    authDomain: "careflow-bcb81.firebaseapp.com",
+    databaseURL: "https://careflow-bcb81-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "careflow-bcb81",
+    storageBucket: "careflow-bcb81.firebasestorage.app",
+    messagingSenderId: "938198308965",
+    appId: "1:938198308965:web:36e4066c33a7318cb9ce8c"
+  };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const database = getDatabase(app);
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const database = getDatabase(app);
 
-const loginForm = document.getElementById("loginForm");
-const loginMessage = document.getElementById("loginMessage");
+  const loginForm = document.getElementById("loginForm");
+  const loginMessage = document.getElementById("loginMessage");
+  const staffLogin = document.getElementById("staffLogin");
+  const careflowApp = document.getElementById("careflowApp");
 
-loginForm.addEventListener("submit", async (event) => {
-  event.preventDefault();
+  loginForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
 
-  const email = document.getElementById("staffEmail").value.trim();
-  const password = document.getElementById("staffPassword").value;
+    const email = document.getElementById("staffEmail").value.trim();
+    const password = document.getElementById("staffPassword").value;
 
-  loginMessage.textContent = "Signing in...";
+    loginMessage.textContent = "Signing in...";
 
-  try {
-    await signInWithEmailAndPassword(auth, email, password);
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      loginMessage.textContent = "Sign-in successful!";
+    } catch (error) {
+      console.error("Staff sign-in failed:", error.code);
+      loginMessage.textContent =
+        "Sign-in failed. Check your email and password.";
+    }
+  });
 
-    loginMessage.textContent = "Sign-in successful!";
-    document.getElementById("staffLogin").hidden = true;
-    document.getElementById("careflowApp").hidden = false;
-  } catch (error) {
-    console.error("Staff sign-in failed:", error.code);
+  onAuthStateChanged(auth, (user) => {
+    staffLogin.hidden = !!user;
+    careflowApp.hidden = !user;
+  });
 
-    loginMessage.textContent =
-      "Sign-in failed. Check your email and password, then try again.";
-  }
-});
-
-    console.log("CareFlow Firebase initialized.");
-  </script>
-</head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CareFlow | Clinic Queue Organizer</title>
+  console.log("CareFlow Firebase initialized.");
+</script>
   
 <style>  
 :root {
