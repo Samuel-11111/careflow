@@ -412,6 +412,30 @@ const priorityRow = document.createElement("div");
 priorityRow.style.marginTop = "10px";
 priorityRow.appendChild(priorityBadge);
 
+const prioritySelect = document.createElement("select");
+prioritySelect.setAttribute("aria-label", "Change priority for " + v.id);
+prioritySelect.style.width = "auto";
+prioritySelect.style.maxWidth = "100%";
+prioritySelect.style.padding = "7px";
+prioritySelect.style.marginTop = "8px";
+
+["Routine", "Priority", "Urgent"].forEach(level => {
+  const option = document.createElement("option");
+  option.value = level;
+  option.textContent = level;
+  prioritySelect.appendChild(option);
+});
+
+prioritySelect.value = priority;
+
+prioritySelect.addEventListener("change", () => {
+  v.priority = prioritySelect.value;
+  saveVisits();
+  render();
+});
+
+priorityRow.appendChild(prioritySelect);
+
     const info = document.createElement("p");
     info.textContent = v.priority + " · " +
       (v.status === "Waiting"
