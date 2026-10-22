@@ -29,6 +29,30 @@ import { getDatabase } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-
     const auth = getAuth(app);
     const database = getDatabase(app);
 
+const loginForm = document.getElementById("loginForm");
+const loginMessage = document.getElementById("loginMessage");
+
+loginForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById("staffEmail").value.trim();
+  const password = document.getElementById("staffPassword").value;
+
+  loginMessage.textContent = "Signing in...";
+
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+
+    loginMessage.textContent = "Sign-in successful!";
+    document.getElementById("staffLogin").hidden = true;
+  } catch (error) {
+    console.error("Staff sign-in failed:", error.code);
+
+    loginMessage.textContent =
+      "Sign-in failed. Check your email and password, then try again.";
+  }
+});
+
     console.log("CareFlow Firebase initialized.");
   </script>
 </head>
