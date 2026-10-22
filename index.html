@@ -170,6 +170,53 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
           Demonstration figures only.</p>
       </div>
     </section>
+
+<section class="panel" id="simulator" style="margin-top:20px">
+  <h2>Queue Performance Simulator</h2>
+  <p>
+    Explore how the number of visits and consultation rooms may affect
+    the time needed to complete a queue.
+  </p>
+
+  <label for="simVisits">Number of fictional visits</label>
+  <input id="simVisits" type="number" min="1" max="500" value="12">
+
+  <label for="simMinutes">Average service time per visit (minutes)</label>
+  <input id="simMinutes" type="number" min="1" max="240" value="10">
+
+  <div class="stats" style="margin-top:18px">
+    <div class="card">
+      <div class="stat-label">One consultation room</div>
+      <div class="stat-number" id="oneRoom">120</div>
+      <p>minutes to complete all visits</p>
+    </div>
+
+    <div class="card">
+      <div class="stat-label">Two consultation rooms</div>
+      <div class="stat-number" id="twoRooms">60</div>
+      <p>minutes to complete all visits</p>
+    </div>
+
+    <div class="card">
+      <div class="stat-label">Estimated time difference</div>
+      <div class="stat-number" id="timeSaved">60</div>
+      <p>minutes in this scenario</p>
+    </div>
+  </div>
+
+  <p id="simExplanation" aria-live="polite">
+    With 12 visits at 10 minutes each, one room takes an estimated
+    120 minutes, while two rooms take 60 minutes.
+  </p>
+
+  <p>
+    <strong>Model assumptions:</strong> All visits are ready at the start,
+    every visit takes the same amount of time, and rooms operate in parallel.
+    This simplified model excludes breaks, interruptions, triage and
+    differences in patient needs. Results are hypothetical, not real clinic
+    performance measurements.
+  </p>
+</section>
   </div>
 </main>
 
@@ -350,3 +397,45 @@ render();
 </script>
 </body>
 </html>
+
+function updateSimulator() {
+  const visits = Number(document.getElementById("simVisits").value);
+  const minutes = Number(document.getElementById("simMinutes").value);
+  const explanation = document.getElementById("simExplanation");
+
+  const valid =
+    Number.isInteger(visits) &&
+    visits >= 1 &&
+    visits <= 500 &&
+    Number.isInteger(minutes) &&
+    minutes >= 1 &&
+    minutes <= 240;
+
+  if (!valid) {
+    explanation.textContent =
+      "Enter 1–500 visits and a whole-number service time between 1 and 240 minutes.";
+    return;
+  }
+
+  // Each room completes one visit per service-time interval.
+  const one = visits * minutes;
+  const two = Math.ceil(visits / 2) * minutes;
+  const difference = one - two;
+
+  document.getElementById("oneRoom").textContent = one;
+  document.getElementById("twoRooms").textContent = two;
+  document.getElementById("timeSaved").textContent = difference;
+
+  explanation.textContent =
+    `For ${visits} visits at ${minutes} minutes each, ` +
+    `one room takes an estimated ${one} minutes and two rooms ` +
+    `take ${two} minutes. The estimated difference is ${difference} minutes.`;
+}
+
+document.getElementById("simVisits")
+  .addEventListener("input", updateSimulator);
+
+document.getElementById("simMinutes")
+  .addEventListener("input", updateSimulator);
+
+updateSimulator();
