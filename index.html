@@ -80,10 +80,46 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   align-items: center; gap: 10px;
 }
 .visit-id { font-weight: 800; font-size: 16px; }
-.status {
+.status {  
   font-size: 11px; font-weight: 700; padding: 6px 8px;
   border-radius: 20px; background: #e8f3f5; color: #126c79;
 }
+  .priority-note {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 8px 0 0;
+}
+
+.priority-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.priority-routine {
+  background: #e8f3eb;
+  color: #24663a;
+  border-color: #c8e3cf;
+}
+
+.priority-normal {
+  background: #fff2d6;
+  color: #805600;
+  border-color: #f0d89c;
+}
+
+.priority-urgent {
+  background: #fde9e7;
+  color: #a12622;
+  border-color: #f3c2bd;
+}
+  
 .visit p { font-size: 13px; color: var(--muted); margin: 10px 0; }
 .actions { display: flex; gap: 7px; flex-wrap: wrap; }
 .empty { text-align: center; padding: 32px 10px; color: var(--muted); }
@@ -162,12 +198,16 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
         <label for="visitId">Fictional visit ID</label>
         <input id="visitId" maxlength="20" placeholder="e.g. DEMO-104"
           required pattern="[A-Za-z0-9_-]+" autocomplete="off">
-
-        <label for="priority">Queue category</label>
-        <select id="priority">
-          <option value="Standard">Standard</option>
-          <option value="Priority review">Priority review</option>
-        </select>
+        
+<label for="priority">Visit priority</label>
+<select id="priority">
+  <option value="Routine">Routine</option>
+  <option value="Priority">Priority</option>
+  <option value="Urgent">Urgent</option>
+</select>
+<p class="priority-note">
+  Demonstration labels only. Follow clinic triage and emergency procedures.
+</p>
 
         <button class="primary full" type="submit">+ Add to queue</button>
       </form>
@@ -265,12 +305,12 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 <script>
 const STORAGE_KEY = "careflow_demo_v1";
 const initialVisits = [
-  { id: "DEMO-101", priority: "Standard", status: "Waiting",
+  { id: "DEMO-101", priority: "Routine", status: "Waiting",
     added: Date.now() - 18 * 60000, started: null },
-  { id: "DEMO-102", priority: "Standard", status: "Waiting",
+  { id: "DEMO-102", priority: "Routine", status: "Waiting",
     added: Date.now() - 9 * 60000, started: null },
-  { id: "DEMO-103", priority: "Priority review",
-    status: "In consultation", added: Date.now() - 25 * 60000,
+  { id: "DEMO-103", priority: "Priority", status: "In consultation",
+    added: Date.now() - 25 * 60000,
     started: Date.now() - 12 * 60000 }
 ];
 
@@ -347,12 +387,30 @@ const visible = visits.filter(v => {
     const id = document.createElement("div");
     id.className = "visit-id";
     id.textContent = v.id;
+   
+const status = document.createElement("span");
+status.className = "status";
+status.textContent = v.status;
 
-    const status = document.createElement("span");
-    status.className = "status";
-    status.textContent = v.status;
+const priorityBadge = document.createElement("span");
+const priority = ["Routine", "Priority", "Urgent"].includes(v.priority)
+  ? v.priority
+  : v.priority === "Priority review" ? "Priority" : "Routine";
 
-    top.append(id, status);
+priorityBadge.className = "priority-badge " + (
+  priority === "Urgent"
+    ? "priority-urgent"
+    : priority === "Priority"
+      ? "priority-normal"
+      : "priority-routine"
+);
+priorityBadge.textContent = priority;
+
+top.append(id, status);
+
+const priorityRow = document.createElement("div");
+priorityRow.style.marginTop = "10px";
+priorityRow.appendChild(priorityBadge);
 
     const info = document.createElement("p");
     info.textContent = v.priority + " · " +
@@ -394,7 +452,7 @@ const visible = visits.filter(v => {
       saveVisits(); render();
     });
 
-    card.append(top, info, actions);
+    card.append(top, priorityRow, info, actions);
     queue.appendChild(card);
   });
 }
