@@ -91,6 +91,49 @@ button:focus-visible, input:focus-visible, select:focus-visible {
   margin: 8px 0 0;
 }
 
+.waiting-alert-settings {
+  margin: 14px 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f8fbfd;
+}
+
+.waiting-alert-settings input {
+  display: block;
+  width: 100%;
+  max-width: 180px;
+  margin-top: 8px;
+  padding: 9px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font: inherit;
+}
+
+#waitingAlertSummary {
+  margin: 10px 0;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+#waitingAlertSummary:empty {
+  display: none;
+}
+
+#waitingAlertSummary.alert-warning {
+  background: #fff2d6;
+  border: 1px solid #f0d89c;
+  color: #805600;
+}
+
+#waitingAlertSummary.alert-clear {
+  background: #e8f3eb;
+  border: 1px solid #c8e3cf;
+  color: #24663a;
+}
+
 .priority-badge {
   display: inline-flex;
   align-items: center;
@@ -262,9 +305,28 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
   <option value="Urgent">Urgent</option>
 </select>
   </div>
+</div>     
+<div class="waiting-alert-settings">
+  <label for="waitingThreshold">Waiting-time alert threshold (minutes)</label>
+  <input
+    id="waitingThreshold"
+    type="number"
+    min="1"
+    max="240"
+    value="30"
+  >
+  <p class="priority-note">
+    Demonstration reminder only. This alert does not replace clinical
+    assessment or clinic procedures.
+  </p>
 </div>
-           <div id="queue" aria-live="polite"></div>
+
+<div id="waitingAlertSummary" aria-live="polite"></div>
+
+<div id="queue" aria-live="polite"></div>
+          
       <hr style="border:0;border-top:1px solid #dce6ed;margin:20px 0">
+      
       <div style="font-size:13px;color:#627487">
         <strong>Average completed waiting time</strong>
         <div class="stat-number" id="averageWait">—</div>
@@ -403,7 +465,9 @@ const visible = visits.filter(v => {
 });
   const queue = document.getElementById("queue");
   queue.replaceChildren();
-
+  
+  updateWaitingAlert();
+  
   if (!visible.length) {
     const empty = document.createElement("div");
     empty.className = "empty";
@@ -548,8 +612,40 @@ document.getElementById("visitForm").addEventListener("submit", event => {
   render();
 });
 
+function updateWaitingAlert() {
+  const thresholdInput = document.getElementById("waitingThreshold");
+  const summary = document.getElementById("waitingAlertSummary");
+
+  if (!thresholdInput || !summary) return;
+
+  const threshold = Math.min(
+    240,
+    Math.max(1, Number(thresholdInput.value) || 30)
+  );
+
+  const overdueVisits = visits.filter(v => {
+    return v.status === "Waiting" &&
+      elapsedMinutes(v.added) >= threshold;
+  });
+
+  if (overdueVisits.length > 0) {
+    const ids = overdueVisits.map(v => v.id).join(", ");
+
+    summary.className = "alert-warning";
+    summary.textContent =
+      `${overdueVisits.length} waiting visit(s) have reached ` +
+      `${threshold} minutes or more: ${ids}. ` +
+      `Please review according to clinic procedures.`;
+  } else {
+    summary.className = "alert-clear";
+    summary.textContent =
+      `No waiting visits have reached the ${threshold}-minute alert threshold.`;
+  }
+}
+
 document.getElementById("filter").addEventListener("change", render);
 document.getElementById("priorityFilter").addEventListener("change", render);
+document.getElementById("waitingThreshold").addEventListener("input", render);
 document.getElementById("searchVisit").addEventListener("input", render);
 document.getElementById("resetBtn").addEventListener("click", () => {
   if (!confirm("Reset all visits to the original demonstration data?")) return;
@@ -612,7 +708,9 @@ document.getElementById("simMinutes")
   .addEventListener("input", updateSimulator);
 
 updateSimulator();
-
+  
+updateWaitingAlert();
+  
 render();
 </script>
 </body>
