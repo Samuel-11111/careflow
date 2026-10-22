@@ -754,11 +754,17 @@ logActivity(v.id, "Visit reopened");
 render();
       });
     }
+  
+addButton(actions, "Remove", "danger", () => {
+  const removedId = v.id;
 
-    addButton(actions, "Remove", "danger", () => {
-      visits = visits.filter(item => item.id !== v.id);
-      saveVisits(); render();
-    });
+  visits = visits.filter(item => item.id !== removedId);
+  saveVisits();
+
+  logActivity(removedId, "Visit removed");
+
+  render();
+});
 
     card.append(top, priorityRow, info, actions);
     queue.appendChild(card);
