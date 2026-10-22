@@ -327,6 +327,17 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
           
       <hr style="border:0;border-top:1px solid #dce6ed;margin:20px 0">
       
+      <section class="activity-panel" aria-labelledby="activityHeading">
+  <h2 id="activityHeading">Queue Activity History</h2>
+  <p class="priority-note">
+    Demonstration history only. Events are stored in this browser
+    and are not a secure clinical audit log.
+  </p>
+  <div id="activityHistory" aria-live="polite">
+    No activity recorded yet.
+  </div>
+</section>
+      
       <div style="font-size:13px;color:#627487">
         <strong>Average completed waiting time</strong>
         <div class="stat-number" id="averageWait">—</div>
