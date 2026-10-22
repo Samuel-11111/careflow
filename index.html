@@ -392,12 +392,6 @@ document.getElementById("resetBtn").addEventListener("click", () => {
   saveVisits();
   render();
 });
-
-render();
-</script>
-</body>
-</html>
-
 function updateSimulator() {
   const visits = Number(document.getElementById("simVisits").value);
   const minutes = Number(document.getElementById("simMinutes").value);
@@ -439,3 +433,9 @@ document.getElementById("simMinutes")
   .addEventListener("input", updateSimulator);
 
 updateSimulator();
+
+render();
+</script>
+</body>
+</html>
+
