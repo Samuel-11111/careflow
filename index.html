@@ -288,6 +288,33 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 </style>
 </head>
 <body>
+<div id="staffLogin" style="max-width: 400px; margin: 40px auto; padding: 24px; border: 1px solid #ddd; border-radius: 12px;">
+  <h2>CareFlow Staff Login</h2>
+  <p>Sign in with your authorized staff account.</p>
+
+  <form id="loginForm">
+    <label for="staffEmail">Email</label>
+    <input
+      id="staffEmail"
+      type="email"
+      required
+      autocomplete="username"
+      style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:8px 0 16px;"
+    >
+
+    <label for="staffPassword">Password</label>
+    <input
+      id="staffPassword"
+      type="password"
+      required
+      autocomplete="current-password"
+      style="display:block; width:100%; box-sizing:border-box; padding:10px; margin:8px 0 16px;"
+    >
+
+    <button type="submit" style="padding:10px 16px;">Sign in</button>
+    <p id="loginMessage" role="status" aria-live="polite"></p>
+  </form>
+</div>
 <header>
   <div class="brand">✚ CareFlow</div>
   <p>A simple, transparent clinic queue organizer</p>
