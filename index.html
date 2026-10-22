@@ -468,7 +468,88 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 <footer>CareFlow • Independent software prototype • Version 1.0</footer>
 
 <script>
-const STORAGE_KEY = "careflow_demo_v1";
+const STORAGE_KEY = "careflow_demo_v1"; 
+const ACTIVITY_KEY = "careflow_activity_v1";
+const MAX_ACTIVITY_EVENTS = 500;
+
+let activityLog = loadActivityLog();
+
+function loadActivityLog() {
+  try {
+    const saved = localStorage.getItem(ACTIVITY_KEY);
+
+    if (saved !== null) {
+      const parsed = JSON.parse(saved);
+
+      if (Array.isArray(parsed)) {
+        return parsed;
+      }
+    }
+  } catch (error) {
+    console.warn("Activity history storage unavailable.");
+  }
+
+  return [];
+}
+
+function saveActivityLog() {
+  try {
+    localStorage.setItem(
+      ACTIVITY_KEY,
+      JSON.stringify(activityLog)
+    );
+  } catch (error) {
+    console.warn("Could not save activity history.");
+  }
+}
+
+function logActivity(visitId, action, details = "") {
+  activityLog.unshift({
+    visitId: String(visitId),
+    action,
+    details,
+    timestamp: new Date().toISOString()
+  });
+
+  activityLog = activityLog.slice(0, MAX_ACTIVITY_EVENTS);
+
+  saveActivityLog();
+  renderActivityHistory();
+}
+
+function renderActivityHistory() {
+  const container = document.getElementById("activityHistory");
+
+  if (!container) return;
+
+  container.replaceChildren();
+
+  if (activityLog.length === 0) {
+    container.textContent = "No activity recorded yet.";
+    return;
+  }
+
+  activityLog.forEach(event => {
+    const item = document.createElement("article");
+    item.className = "visit";
+
+    const heading = document.createElement("strong");
+    heading.textContent = `${event.visitId} — ${event.action}`;
+
+    const details = document.createElement("p");
+    details.textContent = event.details || "No additional details.";
+
+    const time = document.createElement("p");
+    const date = new Date(event.timestamp);
+
+    time.textContent = Number.isNaN(date.getTime())
+      ? "Time unavailable"
+      : date.toLocaleString();
+
+    item.append(heading, details, time);
+    container.appendChild(item);
+  });
+}
 const initialVisits = [
   { id: "DEMO-101", priority: "Routine", status: "Waiting",
     added: Date.now() - 18 * 60000, started: null },
@@ -788,6 +869,8 @@ updateSimulator();
 updateWaitingAlert();
   
 render();
+  
+renderActivityHistory();
   
 setInterval(render, 60000);
   
