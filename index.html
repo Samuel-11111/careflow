@@ -125,11 +125,16 @@ header p {
   line-height: 1.6;
 }
 .main-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
   display: flex;
   gap: 8px;
   padding: 12px max(18px, calc((100% - 1100px)/2));
-  background: white;
-  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.96);
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 4px 14px rgba(20, 45, 78, 0.045);
+  backdrop-filter: blur(12px);
   overflow-x: auto;
 }
 
@@ -353,14 +358,6 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 }
  
 /* CareFlow Premium SaaS Dashboard — Step 1 */
-
-.main-nav {
-  position: relative;
-  gap: 6px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  box-shadow: 0 3px 12px rgba(20, 45, 78, 0.04);
-}
 
 .nav-tab {
   transition: background 0.18s ease, color 0.18s ease;
@@ -606,18 +603,6 @@ footer {
 }
 
 /* Step 6: Refine dashboard navigation */
-.main-nav {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  gap: 8px;
-  padding-top: 12px;
-  padding-bottom: 12px;
-  background: rgba(255, 255, 255, 0.96);
-  border-bottom: 1px solid #e2e8f0;
-  box-shadow: 0 4px 14px rgba(20, 45, 78, 0.045);
-  backdrop-filter: blur(12px);
-}
 
 .nav-tab {
   padding: 11px 15px;
