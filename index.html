@@ -67,6 +67,25 @@ onAuthStateChanged(auth, (user) => {
   }
 });
   
+const signOutButton = document.getElementById("staffSignOut");
+
+signOutButton.addEventListener("click", async () => {
+  signOutButton.disabled = true;
+  signOutButton.textContent = "Signing out...";
+
+  try {
+    await signOut(auth);
+    // onAuthStateChanged will display the sign-in screen.
+  } catch (error) {
+    console.error("Staff sign-out failed:", error.code);
+
+    signOutButton.disabled = false;
+    signOutButton.textContent = "Sign out";
+
+    alert("Sign-out failed. Please try again.");
+  }
+});
+
   console.log("CareFlow Firebase initialized.");
 </script>
   
@@ -375,6 +394,14 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 <header>
   <div class="brand">✚ CareFlow</div>
   <p>A simple, transparent clinic queue organizer</p>
+
+  <button
+    id="staffSignOut"
+    type="button"
+    style="margin-top:14px; background:white; color:#173b55;"
+  >
+    Sign out
+  </button>
 </header>
 
 <nav class="main-nav" aria-label="Main navigation">
