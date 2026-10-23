@@ -535,6 +535,42 @@ footer {
   }
 }
 
+/* Step 4: Refine dashboard statistic cards */
+.stats .card {
+  position: relative;
+  padding: 22px;
+  border: 1px solid #e3eaf2;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 4px 16px rgba(20, 45, 78, 0.04);
+}
+
+.stats .stat-label {
+  color: #64748b;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.stats .stat-number {
+  margin-top: 10px;
+  color: #142d4e;
+  font-size: 32px;
+  font-weight: 750;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 720px) {
+  .stats .card {
+    padding: 14px 11px;
+  }
+
+  .stats .stat-number {
+    font-size: 25px;
+  }
+}
+
 </style>
 </head>
 <body>
