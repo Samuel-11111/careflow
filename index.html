@@ -53,11 +53,16 @@
     }
   });
 
-  onAuthStateChanged(auth, (user) => {
-    staffLogin.hidden = !!user;
-    careflowApp.hidden = !user;
-  });
+onAuthStateChanged(auth, (user) => {
+  console.log("Auth state changed:", user ? "signed in" : "signed out");
 
+  staffLogin.hidden = !!user;
+  careflowApp.hidden = !user;
+
+  if (user) {
+    console.log("Dashboard should now be visible.");
+  }
+});
   console.log("CareFlow Firebase initialized.");
 </script>
   
