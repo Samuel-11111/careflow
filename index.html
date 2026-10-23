@@ -141,21 +141,27 @@ header p {
 .nav-tab {
   flex: 0 0 auto;
   background: transparent;
-  color: var(--muted);
+  color: #64748b;
   border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 11px 14px;
+  border-radius: 10px;
+  padding: 11px 15px;
+  font-weight: 650;
   white-space: nowrap;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease;
 }
 
 .nav-tab:hover {
-  background: #f3f7fa;
+  background: #f1f6fa;
+  color: #142d4e;
 }
 
 .nav-tab.active {
-  background: #e8f3f5;
-  color: var(--teal);
-  border-color: #cce7e9;
+  background: #e6f4f5;
+  color: #087f8c;
+  border-color: #c6e7e9;
 }
 
 .nav-tab:focus-visible {
@@ -358,16 +364,6 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding: 18px
 }
  
 /* CareFlow Premium SaaS Dashboard — Step 1 */
-
-.nav-tab {
-  transition: background 0.18s ease, color 0.18s ease;
-}
-
-.nav-tab.active {
-  background: #e6f4f5;
-  color: #087f8c;
-  border-color: #c6e7e9;
-}
 
 main {
   padding-top: 30px;
@@ -603,29 +599,6 @@ footer {
 }
 
 /* Step 6: Refine dashboard navigation */
-
-.nav-tab {
-  padding: 11px 15px;
-  border: 1px solid transparent;
-  border-radius: 10px;
-  color: #64748b;
-  font-weight: 650;
-  transition:
-    background 0.18s ease,
-    color 0.18s ease,
-    border-color 0.18s ease;
-}
-
-.nav-tab:hover {
-  background: #f1f6fa;
-  color: #142d4e;
-}
-
-.nav-tab.active {
-  background: #e6f4f5;
-  color: #087f8c;
-  border-color: #c6e7e9;
-}
 
 .nav-tab:focus-visible {
   outline: 3px solid #74c8d2;
