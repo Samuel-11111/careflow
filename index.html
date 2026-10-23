@@ -571,6 +571,58 @@ footer {
   }
 }
 
+/* Step 5: Polish individual visit cards */
+.visit {
+  margin-top: 14px;
+  padding: 18px;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(20, 45, 78, 0.035);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.visit:hover {
+  border-color: #cbd9e6;
+  box-shadow: 0 5px 14px rgba(20, 45, 78, 0.07);
+}
+
+.visit-top {
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.visit-id {
+  color: #142d4e;
+  font-size: 15px;
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.visit p {
+  line-height: 1.6;
+}
+
+.visit .actions {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #edf1f5;
+}
+
+.visit .actions button {
+  min-height: 36px;
+}
+
+@media (max-width: 480px) {
+  .visit {
+    padding: 14px;
+  }
+
+  .visit .actions button {
+    flex: 1 1 120px;
+  }
+}
+
 </style>
 </head>
 <body>
